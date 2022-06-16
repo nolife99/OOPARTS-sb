@@ -162,7 +162,7 @@ namespace StorybrewScripts
                         {
                             timeStep = Beatmap.GetTimingPointAt((int)StartTime).BeatDuration / 8;
                         }
-                        else if (s.TravelDuration >= timeStep / 4 - 1 && s.TravelDuration < 90)
+                        else if (s.TravelDuration >= timeStep / 4 - 1)
                         {
                             timeStep = Beatmap.GetTimingPointAt((int)StartTime).BeatDuration / 4;
                         }
