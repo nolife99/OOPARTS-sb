@@ -27,7 +27,7 @@ namespace StorybrewScripts
             var sprite = GetLayer("").CreateSprite("sb/p.png");
             sprite.ScaleVec(109527, 854, 480);
             sprite.Fade(109527, 119366, 0, 0.5);
-            sprite.Additive(109527, 250634);
+            sprite.Additive(109527, 202848);
             sprite.Fade(119366, 0);
 
             sprite.Fade(144673, 149259, 0, 0.5);
@@ -43,6 +43,7 @@ namespace StorybrewScripts
             sprite.Color(250634, 260000, new Color4(255, 255, 255, 1), new Color4(240, 240, 240, 1));
             sprite.Fade(260000, 0);
 
+            sprite.Additive(305659, 307122);
             sprite.Fade(305659, 306829, 0, 0.25);
             sprite.Fade(306829, 307122, 0.25, 0);
         }
