@@ -3,12 +3,14 @@ using OpenTK.Graphics;
 using StorybrewCommon.Mapset;
 using StorybrewCommon.Scripting;
 using StorybrewCommon.Storyboarding;
+using StorybrewCommon.Storyboarding.Util;
 using System;
 
 namespace StorybrewScripts
 {
     class Hitobject : StoryboardObjectGenerator
     {
+        OsbSpritePools pool;
         public override void Generate()
         {
             int[] times = new int[]{
@@ -24,42 +26,53 @@ namespace StorybrewScripts
                 352545, 352954, 353226, 394966, 395096, 396009, 396140, 396661, 397053, 397183, 397705, 398096, 398226,
                 398618, 398879, 399074, 399270
             };
-            foreach (var time in times)
+            using (pool = new OsbSpritePools(GetLayer("Rings")))
             {
-                BiggerRings(time);
+                pool.MaxPoolDuration = (int)AudioDuration;
+                foreach (var time in times)
+                {
+                    BiggerRings(time);
+                }
             }
-            CircleRings(46460, 48700, false);
-            CircleRings(64390, 92493, false);
-            CircleRings(104104, 106113, false);
-            CircleRings(122567, 125266, false);
-            CircleRings(173919, 181836, false);
-            BeamStrike(181919, 202768);
-            Diamond(202848, 222522);
-            CircleRings(206953, 207821, false);
-            CircleRings(231888, 250561, false);
-            CircleRings(216833, 217442, false);
-            CircleRings(260000, 269293, false);
-            CircleRings(286195, 288317, false);
-            CircleRings(295122, 297683, false);
-            CircleRings(324390, 325488, false);
-            CircleRings(344292, 356357, false);
-            CircleRings(357400, 361509, false);
-            BeamStrike(361574, 378205);
-            Diamond(378270, 380292);
-            CircleRings(380357, 382379, false);
-            Diamond(382444, 384466);
-            CircleRings(384531, 386096, false);
-            Diamond(386226, 399270);
-            CircleRings(386618, 394900, false);
-            CircleRings(394966, 399270, true);
+
+            using (pool = new OsbSpritePools(GetLayer("")))
+            {
+                pool.MaxPoolDuration = (int)AudioDuration;
+
+                CircleRings(46460, 48700, false);
+                CircleRings(64390, 92493, false);
+                CircleRings(104104, 106113, false);
+                CircleRings(122567, 125266, false);
+                CircleRings(173919, 181836, false);
+                BeamStrike(181919, 202768);
+                Diamond(202848, 222522);
+                CircleRings(206953, 207821, false);
+                CircleRings(231888, 250561, false);
+                CircleRings(216833, 217442, false);
+                CircleRings(260000, 269293, false);
+                CircleRings(286195, 288317, false);
+                CircleRings(295122, 297683, false);
+                CircleRings(324390, 325488, false);
+                CircleRings(344292, 356357, false);
+                CircleRings(357400, 361509, false);
+                BeamStrike(361574, 378205);
+                Diamond(378270, 380292);
+                CircleRings(380357, 382379, false);
+                Diamond(382444, 384466);
+                CircleRings(384531, 386096, false);
+                Diamond(386226, 399270);
+                CircleRings(386618, 394900, false);
+                CircleRings(394966, 399270, true);
+            }
         }
-        private void CircleRings(int startTime, int endTime, bool squares)
+        void CircleRings(int startTime, int endTime, bool squares)
         {
             foreach (var hitobject in Beatmap.HitObjects)
             {
                 if (hitobject.StartTime >= startTime && hitobject.StartTime <= endTime)
                 {
-                    var sprite = GetLayer("Hitobjects").CreateSprite("sb/c.png", OsbOrigin.Centre, hitobject.Position);
+                    var sprite = pool.Get(hitobject.StartTime, hitobject.EndTime + 1000, "sb/c.png", OsbOrigin.Centre, false);
+                    sprite.Move(hitobject.StartTime, hitobject.Position);
                     sprite.Scale(OsbEasing.OutQuint, hitobject.StartTime, hitobject.EndTime + 1000, 0.08, 0.2);
                     sprite.Color(hitobject.StartTime, hitobject.Color);
                     sprite.Fade(OsbEasing.Out, hitobject.StartTime, hitobject.EndTime + 1000, 1, 0);
@@ -70,7 +83,7 @@ namespace StorybrewScripts
                         var amount = Random(4, 8);
                         for (int i = 0; i < amount; i++)
                         {
-                            var square = GetLayer("Hitobjects").CreateSprite("sb/p.png");
+                            var square = pool.Get(hitobject.StartTime, hitobject.StartTime + 500, "sb/p.png", OsbOrigin.Centre, false);
                             square.Scale(OsbEasing.OutQuad, hitobject.StartTime, hitobject.StartTime + 500, 50, 0);
 
                             var nPosition = new Vector2(
@@ -89,13 +102,14 @@ namespace StorybrewScripts
                 }
             }
         }
-        private void BiggerRings(int time)
+        void BiggerRings(int time)
         {
             foreach (var hitobject in Beatmap.HitObjects)
             {
                 if (hitobject.StartTime >= time - 1 && hitobject.StartTime <= time + 1)
                 {
-                    var sprite = GetLayer("Rings").CreateSprite("sb/c.png", OsbOrigin.Centre, hitobject.Position);
+                    var sprite = pool.Get(hitobject.StartTime, hitobject.EndTime + 1000, "sb/c.png", OsbOrigin.Centre, false);
+                    sprite.Move(hitobject.StartTime, hitobject.Position);
                     sprite.Scale(OsbEasing.OutQuad, hitobject.StartTime, hitobject.EndTime + 1000, 0.1, 0.5);
                     sprite.Color(hitobject.StartTime, new Color4(230, 230, 230, 1));
                     sprite.Fade(OsbEasing.Out, hitobject.StartTime, hitobject.EndTime + 1000, 1, 0);
@@ -104,7 +118,7 @@ namespace StorybrewScripts
                     var amount = Random(6, 12);
                     for (int i = 0; i < amount; i++)
                     {
-                        var square = GetLayer("Rings").CreateSprite("sb/p.png");
+                        var square = pool.Get(hitobject.StartTime, hitobject.StartTime + 500, "sb/p.png", OsbOrigin.Centre, false);
                         square.Scale(OsbEasing.OutQuad, hitobject.StartTime, hitobject.StartTime + 500, 50, 0);
                         square.Color(hitobject.StartTime, new Color4(220, 220, 220, 1));
 
@@ -122,27 +136,29 @@ namespace StorybrewScripts
                 }
             }
         }
-        private void BeamStrike(int startTime, int endTime)
+        void BeamStrike(int startTime, int endTime)
         {
             foreach (var hitobject in Beatmap.HitObjects)
             {
                 if (hitobject.StartTime >= startTime && hitobject.StartTime <= endTime)
                 {
                     int scaleY = 1000;
-                    var sprite = GetLayer("Hitobjects").CreateSprite("sb/p.png", OsbOrigin.Centre, hitobject.Position);
+                    var sprite = pool.Get(hitobject.StartTime, hitobject.StartTime + 1000, "sb/p.png", OsbOrigin.Centre, false, 1);
+                    sprite.Move(hitobject.StartTime, hitobject.Position);
                     sprite.Rotate(hitobject.StartTime, Random(-0.08, 0.08));
                     sprite.ScaleVec(OsbEasing.OutExpo, hitobject.StartTime, hitobject.StartTime + 1000, 1.5, scaleY, 0, scaleY);
                     sprite.Fade(hitobject.StartTime, 0.8);
                 }
             }
         }
-        private void Diamond(int startTime, int endTime)
+        void Diamond(int startTime, int endTime)
         {
             foreach (var hitobject in Beatmap.HitObjects)
             {
                 if (hitobject.StartTime > startTime - 5 && hitobject.StartTime < endTime + 5)
                 {
-                    var sprite = GetLayer("Hitobjects").CreateSprite("sb/p.png", OsbOrigin.Centre, hitobject.Position);
+                    var sprite = pool.Get(hitobject.StartTime, hitobject.EndTime + 300, "sb/p.png", OsbOrigin.Centre, false);
+                    sprite.Move(hitobject.StartTime, hitobject.Position);
                     sprite.Scale(OsbEasing.OutElasticHalf, hitobject.StartTime, hitobject.StartTime + 300, 110, 80);
                     sprite.Rotate(hitobject.StartTime, Math.PI / 4);
                     sprite.Fade(hitobject.StartTime, 0.8);
@@ -189,24 +205,24 @@ namespace StorybrewScripts
                         }
                     }
                     double angle = 0;
-                    var scaleStart = 75;
-                    var scaleEnd = 100;
+                    var startRadius = 75;
+                    var endRadius = 100;
                     var pos = hitobject.Position;
 
                     for (int i = 0; i < 4; i++)
                     {
                         var startPos = new Vector2(
-                            (float)(pos.X + Math.Cos(angle) * scaleStart),
-                            (float)(pos.Y + Math.Sin(angle) * scaleStart));
+                            (float)(pos.X + Math.Cos(angle) * startRadius),
+                            (float)(pos.Y + Math.Sin(angle) * startRadius));
 
                         var endPos = new Vector2(
-                            (float)(pos.X + Math.Cos(angle) * scaleEnd),
-                            (float)(pos.Y + Math.Sin(angle) * scaleEnd));
+                            (float)(pos.X + Math.Cos(angle) * endRadius),
+                            (float)(pos.Y + Math.Sin(angle) * endRadius));
 
-                        double startScale = Math.Sqrt(2 * Math.Pow(scaleStart, 2));
-                        double endScale = Math.Sqrt(2 * Math.Pow(scaleEnd, 2));
+                        double startScale = Math.Sqrt(2 * Math.Pow(startRadius, 2));
+                        double endScale = Math.Sqrt(2 * Math.Pow(endRadius, 2));
 
-                        var border = GetLayer("BeatScale").CreateSprite("sb/p.png", OsbOrigin.BottomCentre);
+                        var border = pool.Get(hitobject.StartTime, hitobject.StartTime + 500, "sb/p.png", OsbOrigin.BottomCentre, false);
                         border.Rotate(hitobject.StartTime, angle - Math.PI / 4);
                         border.ScaleVec(OsbEasing.OutQuint, hitobject.StartTime, hitobject.StartTime + 500, 1.23, startScale + 0.5, 0.6, endScale);
                         border.Move(OsbEasing.OutQuint, hitobject.StartTime, hitobject.StartTime + 500, startPos, endPos);

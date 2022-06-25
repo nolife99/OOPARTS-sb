@@ -3,6 +3,7 @@ using OpenTK.Graphics;
 using StorybrewCommon.Mapset;
 using StorybrewCommon.Scripting;
 using StorybrewCommon.Storyboarding;
+using StorybrewCommon.Storyboarding.Util;
 using StorybrewCommon.Animations;
 using System;
 
@@ -10,69 +11,93 @@ namespace StorybrewScripts
 {
     class BG : StoryboardObjectGenerator
     {
+        OsbSpritePool pool;
+        OsbSpritePools pools;
         public override void Generate()
         {
             Background();
             Effects();
-            SmallParticles(27981, 48710);
             Flash();
-            HighlightBubbles(48710, 63910, 17);
-            SmallParticles(77108, 90886);
-            BackgroundBlur(78886, 84028, 0.5, false);
-            BackgroundBlur(85743, 89171, 2, false);
-            BackgroundBlur(89171, 90886, 4, false);
-            Spectrum(92600, 119366, false);
 
-            //BPM changes here
-            BackgroundBlur(92600, 99457, 0.5, true, true);
-            BackgroundBlur(99457, 106217, 0.5, true, true);
-            BackgroundBlur(106217, 112836, 0.5, true, true);
-            BackgroundBlur(112836, 118449, 0.5, true, true);
+            using (pool = new OsbSpritePool(GetLayer("Highlights"), "sb/hl.png", OsbOrigin.Centre, false))
+            {
+                pool.MaxPoolDuration = (int)AudioDuration;
+                
+                HighlightBubbles(48710, 63910);
+                HighlightBubbles(227205, 258829);
+            }
+            
+            using (pool = new OsbSpritePool(GetLayer("Particles"), "sb/p.png", OsbOrigin.Centre, false))
+            {
+                pool.MaxPoolDuration = (int)AudioDuration;
 
-            Spectrum(125766, 150788, false);
-            BackgroundBlur(126567, 132167, 0.5, true);
-            BackgroundBlur(132955, 136902, 0.5, true);
-            BackgroundBlur(138481, 144577, 1, true);
-            BackgroundBlur(144673, 149259, 1, true);
+                SmallParticles(27981, 48710);
+                SmallParticles(77108, 90886);
+                SmallParticles(150788, 177919);
+                SmallParticles(306829, 344292);
+            }
 
-            SmallParticles(150788, 177919);
+            using (pools = new OsbSpritePools(GetLayer("1Blur")))
+            {
+                pool.MaxPoolDuration = (int)AudioDuration;
 
-            BackgroundBlur(168434, 172549, 1, false);
-            BackgroundBlur(173919, 176586, 1, false);
-            BackgroundBlur(176753, 177919, 2, false);
+                BackgroundBlur(78886, 84028, 0.5, false);
+                BackgroundBlur(85743, 89171, 2, false);
+                BackgroundBlur(89171, 90886, 4, false);
 
-            Spectrum(181919, 222522, false);
-            BackgroundBlur(181919, 187169, 0.5, true, true);
-            BackgroundBlur(187251, 192444, 0.5, true, true);
-            BackgroundBlur(192526, 197634, 0.5, true, true);
-            BackgroundBlur(197714, 201565, 0.5, true, true);
-            BackgroundBlur(202848, 205374, 0.5, true, true);
-            BackgroundBlur(207899, 212873, 0.5, true, true);
-            BackgroundBlur(212873, 216833, 0.5, true, true);
-            BackgroundBlur(217746, 221926, 0.5, true, true);
+                BackgroundBlur(92600, 99457, 0.5, true, true);
+                BackgroundBlur(99457, 106217, 0.5, true, true);
+                BackgroundBlur(106217, 112836, 0.5, true, true);
+                BackgroundBlur(112836, 118449, 0.5, true, true);
 
-            HighlightBubbles(227205, 258829, 20);
+                BackgroundBlur(126567, 132167, 0.5, true);
+                BackgroundBlur(132955, 136902, 0.5, true);
+                BackgroundBlur(138481, 144577, 1, true);
+                BackgroundBlur(144673, 149259, 1, true);
 
-            Spectrum(269366, 306829, true);
-            BackgroundBlur(269366, 285756, 0.5, true, true);
-            BackgroundBlur(278439, 278440, 1, true);
-            BackgroundBlur(286927, 287366, 0.75, true);
-            BackgroundBlur(287512, 287951, 0.75, true);
-            BackgroundBlur(288390, 304488, 0.5, true);
-            BackgroundBlur(295122, 295634, 0.75, true);
-            BackgroundBlur(295708, 296220, 0.75, true);
-            BackgroundBlur(296293, 297464, 0.5, true);
-            BackgroundBlur(288829, 305220, 0.25, false);
-            BackgroundBlur(304781, 306172, 3, true);
-            BackgroundBlur(306244, 306829, 4, true);
-            BackgroundBlur(307415, 324390, 0.5, true, true);
-            SmallParticles(306829, 344292);
-            BackgroundBlur(315244, 315464, 1, true);
-            BackgroundBlur(378270, 386096, 1, false);
+                BackgroundBlur(168434, 172549, 1, false);
+                BackgroundBlur(173919, 176586, 1, false);
+                BackgroundBlur(176753, 177919, 2, false);
+
+                BackgroundBlur(181919, 187169, 0.5, true, true);
+                BackgroundBlur(187251, 192444, 0.5, true, true);
+                BackgroundBlur(192526, 197634, 0.5, true, true);
+                BackgroundBlur(197714, 201565, 0.5, true, true);
+                BackgroundBlur(202848, 205374, 0.5, true, true);
+                BackgroundBlur(207899, 212873, 0.5, true, true);
+                BackgroundBlur(212873, 216833, 0.5, true, true);
+                BackgroundBlur(217746, 221926, 0.5, true, true);
+
+                BackgroundBlur(269366, 285756, 0.5, true, true);
+                BackgroundBlur(278439, 278440, 1, true);
+                BackgroundBlur(286927, 287366, 0.75, true);
+                BackgroundBlur(287512, 287951, 0.75, true);
+                BackgroundBlur(288390, 304488, 0.5, true);
+                BackgroundBlur(295122, 295634, 0.75, true);
+                BackgroundBlur(295708, 296220, 0.75, true);
+                BackgroundBlur(296293, 297464, 0.5, true);
+                BackgroundBlur(288829, 305220, 0.25, false);
+                BackgroundBlur(304781, 306172, 3, true);
+                BackgroundBlur(306244, 306829, 4, true);
+                BackgroundBlur(307415, 324390, 0.5, true, true);
+                BackgroundBlur(315244, 315464, 1, true);
+                BackgroundBlur(378270, 386096, 1, false);
+            }
+            
+            using (pool = new OsbSpritePool(GetLayer("Spectrum"), "sb/p.png", OsbOrigin.Centre, false))
+            {
+                pool.MaxPoolDuration = (int)AudioDuration;
+
+                Spectrum(92600, 119367, false);
+                Spectrum(125766, 150788, false);
+                Spectrum(125766, 150788, false);
+                Spectrum(181919, 222522, false);
+                Spectrum(269366, 306829, true);
+            }
 
             Gray();
         }
-        private void Background()
+        void Background()
         {
             var s = GetLayer("1").CreateSprite("Camellia_OOParts_OWC_BGwoText.jpg");
             s.Fade(0, 0);
@@ -141,7 +166,7 @@ namespace StorybrewScripts
             sprite.Rotate(OsbEasing.InOutSine, velocity / 2, velocity, rotateEnd, rotation);
             sprite.EndGroup();
         }
-        private void Effects()
+        void Effects()
         {
             var back = GetLayer("Back").CreateSprite("sb/p.png");
             back.ScaleVec(64390, 854, 480);
@@ -160,7 +185,9 @@ namespace StorybrewScripts
             back.Additive(168434, 168777);
             back.Fade(260000, 1);
             back.Color(258829, new Color4(255, 255, 255, 1));
-            back.Fade(264683, 268195, 1, 0);
+            back.Color(264683, 268195, new Color4(255, 255, 255, 1), new Color4(0, 0, 0, 1));
+            back.Fade(269366, 0);
+            back.Color(344293, new Color4(255, 255, 255, 1));
             back.Fade(344293, 348864, 0, 1);
             back.Additive(361574, 362618);
             back.Fade(361574, 362618, 1, 0);
@@ -198,28 +225,21 @@ namespace StorybrewScripts
             back.Fade(0, timeStep, 0.1, 0);
             back.EndGroup();
         }
-        private void HighlightBubbles(int startTime, int endTime, int amount)
+        void HighlightBubbles(int startTime, int endTime)
         {
-            for (int i = 0; i < amount; i++)
+            for (int i = startTime; i < endTime; i += 500)
             {
                 var fade = Random(0.05, 0.3);
-                var sprite = GetLayer("Highlights").CreateSprite("sb/hl.png", OsbOrigin.Centre, new Vector2(0, Random(240, 480)));
-                sprite.Fade(startTime + i * 700, startTime + i * 700 + 3000, 0, fade);
-                sprite.MoveX(startTime + i * 700, endTime + i * 1000, Random(-157, 460), Random(707, 747));
-                sprite.Scale(startTime + i * 1000, Random(0.1, 0.5));
-                sprite.Fade(endTime, endTime + 1000, fade, 0);
-            }
-            for (int i = 0; i < amount; i++)
-            {
-                var fade = Random(0.1, 0.5);
-                var sprite = GetLayer("Highlights").CreateSprite("sb/hl.png", OsbOrigin.Centre, new Vector2(0, Random(240, 480)));
-                sprite.Fade(startTime + i * 700, startTime + i * 700 + 3000, 0, fade);
-                sprite.MoveX(startTime + i * 700, endTime + i * 1000, Random(-157, 450), Random(707, 757));
-                sprite.Scale(startTime + i * 1000, Random(0.01, 0.05));
-                sprite.Fade(endTime, endTime + 1000, fade, 0);
+                var duration = Random(10000, 30000);
+                var scale = Random(0, 10) < 5 ? Random(0.1, 0.5) : Random(0.01, 0.05);
+                var sprite = pool.Get(i, i + duration);
+                sprite.Fade(i, i + 3000, 0, fade);
+                sprite.Move(i, i + duration, Random(-157, 460), Random(240, 480), Random(707, 747), Random(240, 480));
+                sprite.Scale(i, scale);
+                sprite.Fade(i + duration - 1000, i + duration, fade, 0);
             }
         }
-        private void Gray()
+        void Gray()
         {
             var bitmap = GetMapsetBitmap("sb/b1.jpg");
             var sprite = GetLayer("1").CreateSprite("sb/b1.jpg");
@@ -268,7 +288,7 @@ namespace StorybrewScripts
                 }
             }
         }
-        private void Flash()
+        void Flash()
         {
             var sprite = GetLayer("2").CreateSprite("sb/p.png");
             sprite.Additive(48710);
@@ -331,82 +351,78 @@ namespace StorybrewScripts
             sprite.Fade(394966, 395487, 0.6, 0);
             sprite.Fade(399270, 402270, 0.6, 0);
         }
-        private void BackgroundBlur(int startTime, int endTime, double BeatDivisor, bool Grad, bool split = false)
+        void BackgroundBlur(int startTime, int endTime, double BeatDivisor, bool Grad, bool split = false)
         {
             var bitmap = GetMapsetBitmap("sb/b.jpg");
             
             var timeStep = Beatmap.GetTimingPointAt(startTime).BeatDuration / BeatDivisor;
             for (double i = startTime; i <= endTime; i += timeStep)
             {
-                var pos = Grad ? new Vector2(Random(310, 330), Random(230, 250)) : new Vector2(320, 240);
-                var sprite = GetLayer("1Blur").CreateSprite("sb/b.jpg", OsbOrigin.Centre, pos);
-                sprite.Additive(i);
+                var pos = new Vector2(Random(310, 330), Random(230, 250));
+                var sprite = pools.Get(i, i + 750, "sb/b.jpg", OsbOrigin.Centre, true);
                 sprite.Scale(i, i + 750, 915f / bitmap.Width, 915f / bitmap.Width + 0.01);
                 sprite.Fade(i, i + 750, 0.4, 0);
-
-                sprite.ColorHsb(i, Random(180, 340), Random(0.25, 0.75), 0.8);
-
                 if (Grad)
                 {
+                    sprite.Move(i, pos);
                     sprite.Rotate(i, Random(-0.0314, 0.0314));
+                }
+                else
+                {
+                    sprite.Move(i, 320, 240);
+                }
+
+                sprite.ColorHsb(i, Random(180, 340), Random(0.25, 0.75), 0.8);
+            }
+            for (double i = startTime; i <= endTime; i += timeStep)
+            {
+                if (Grad)
+                {
                     if (BeatDivisor <= 2)
                     {
                         var gMap = GetMapsetBitmap("sb/g.png");
-                        var grad = GetLayer("GradientFlashes").CreateSprite("sb/g.png");
                         var start = split ? i + timeStep / 2 : i;
                         var end = split ? i + timeStep / 2 + 750 : i + 750;
+                        var grad = pools.Get(start, end, "sb/g.png", OsbOrigin.Centre, true);
                         grad.Scale(start, end, 854f / gMap.Width, 854f / gMap.Width + 0.02);
                         grad.Fade(start, end, 0.5, 0);
-                    }
+                    }   
                 }
             }
         }
-        private void Buildup1()
+        void SmallParticles(int startTime, int endTime)
         {
-            var basicHL = GetLayer("a Highlight").CreateSprite("sb/hl.png");
-            basicHL.Color(75330, new Color4(0, 0, 0, 1));
-            basicHL.Fade(OsbEasing.Out, 75330, 75552, 0, 0.7);
-            basicHL.Fade(OsbEasing.In, 75552, 75775, 0.7, 0);
-        }
-        private void SmallParticles(int startTime, int endTime)
-        {
-            for (int i = 0; i < 80; i++)
+            for (int i = startTime; i < endTime; i += 500)
             {
-                var delay = Random(1, 5000);
-                var sprite = GetLayer("Particles").CreateSprite("sb/p.png", OsbOrigin.Centre, new Vector2(0, Random(0, 480)));
-                sprite.Fade(startTime + delay, startTime + delay + 1000, 0, 1);
-                sprite.Fade(endTime, endTime + 1000, 1, 0);
-                sprite.Scale(startTime + delay, Random(0.5, 1));
-                sprite.Rotate(startTime + delay, Random(0, 1.0));
-
-                var elementStartTime = startTime + delay;
                 var duration = Random(7000, 20000);
-                while (elementStartTime < endTime)
-                {
-                    var elementEndTime = elementStartTime + duration;
-                    sprite.MoveX(elementStartTime, elementEndTime, -107, 750);
+                int posY = Random(0, 480);
 
-                    elementStartTime += duration;
-                }
+                var sprite = pool.Get(i, i + duration + 1000);
+                sprite.Fade(i, i + 1000, 0, 1);
+                sprite.Fade(i + duration, i + duration + 1000, 1, 0);
+                sprite.Scale(i, Random(0.5, 1));
+                sprite.Rotate(i, Random(0, 1.0));
+
+                sprite.Move(i, i + duration, -107, posY, 750, posY);
             }
         }
-        private void Spectrum(int StartTime, int EndTime, bool DisplayBottom)
+        void Spectrum(int StartTime, int EndTime, bool DisplayBottom)
         {
-            var MinimalHeight = 0.1f;
+            var MinimalHeight = 0.25f;
             var ScaleY = 70;
             float LogScale = 7;
             var Position = new Vector2(-103, 240);
 
-            int BarCount = 100;
+            int BarCount = 200;
             var Width = 854f;
 
             var heightKeyframes = new KeyframedValue<float>[BarCount];
             for (var i = 0; i < BarCount; i++)
                 heightKeyframes[i] = new KeyframedValue<float>(null);
 
-            double timeStep = Beatmap.GetTimingPointAt(StartTime).BeatDuration / 8;
+            var timeStep = 40;
             double offset = timeStep * 0.2;
-            for (var t = (double)StartTime; t < EndTime; t += timeStep)
+            for (var t = (double)StartTime; t <= EndTime; t += timeStep)
             {
                 var fft = GetFft(t + offset, BarCount, null, OsbEasing.InExpo);
                 for (var i = 0; i < BarCount; i++)
@@ -417,40 +433,42 @@ namespace StorybrewScripts
                     heightKeyframes[i].Add(t, height);
                 }
             }
-            var barWidth = Width / BarCount;
-            for (var i = 0; i < BarCount; i++)
+            var barWidth = Width * 2 / BarCount;
+            for (var i = 0; i < BarCount / 2; i++)
             {
                 var keyframes = heightKeyframes[i];
                 keyframes.Simplify1dKeyframes(1, h => h);
 
-                var topBar = GetLayer("Spectrum").CreateSprite("sb/p.png", OsbOrigin.Centre, new Vector2(Position.X + i * barWidth, Position.Y));
-                var bottomBar = GetLayer("Spectrum").CreateSprite("sb/p.png", OsbOrigin.Centre, new Vector2(Position.X + i * barWidth, Position.Y));
+                var topBar = pool.Get(StartTime, EndTime);
+                var bottomBar = pool.Get(StartTime, EndTime);
 
+                topBar.MoveX(StartTime, Position.X + i * barWidth);
                 topBar.Scale(StartTime, barWidth / 3);
                 topBar.Fade(StartTime, StartTime + 1500, 0, 1);
                 topBar.Fade(EndTime - 1000, EndTime, 1, 0);
                 if (DisplayBottom)
                 {
+                    bottomBar.MoveX(StartTime, Position.X + i * barWidth);
                     bottomBar.Scale(StartTime, barWidth / 3);
                     bottomBar.Color(StartTime, Color4.Black);
                     bottomBar.Fade(StartTime, StartTime + 1500, 0, 1);
                     bottomBar.Fade(EndTime - 1000, EndTime, 1, 0);
-                    LogScale = 5;
+                    LogScale = 5.5f;
                 }
                 keyframes.ForEachPair(
                     (start, end) =>
                     {
                         topBar.MoveY(start.Time, end.Time, 
-                        Position.Y - start.Value / 2 * LogScale, Position.Y - end.Value / 2 * LogScale);
+                        (int)(Position.Y - start.Value / 2 * LogScale), (int)(Position.Y - end.Value / 2 * LogScale));
 
                         if (DisplayBottom)
                         {
                             bottomBar.MoveY(start.Time, end.Time, 
-                            Position.Y + start.Value / 2 * LogScale, Position.Y + end.Value / 2 * LogScale);
+                            (int)(Position.Y + start.Value / 2 * LogScale), (int)(Position.Y + end.Value / 2 * LogScale));
                         }
                     },
                     MinimalHeight,
-                    s => (int)s
+                    s => s
                 );
             }
         }

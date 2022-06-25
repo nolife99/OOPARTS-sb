@@ -4,7 +4,7 @@ Script: "BG"
 Config:
   RandomSeed:
     Type: "System.Int32"
-    Value: "2"
+    Value: "0"
     DisplayName: "Random seed"
 Layers:
   46374d16c2a24f6db77e8b922f12412d:
@@ -24,11 +24,6 @@ Layers:
     Visible: Yes
   4c7b70dc9a264a0b8a8a6cff42a22495:
     Name: "Spectrum"
-    OsbLayer: Background
-    DiffSpecific: No
-    Visible: Yes
-  60613ee9b79048589655f262b0aeb141:
-    Name: "GradientFlashes"
     OsbLayer: Background
     DiffSpecific: No
     Visible: Yes

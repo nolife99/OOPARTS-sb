@@ -12,13 +12,8 @@ Layers:
     OsbLayer: Background
     DiffSpecific: No
     Visible: Yes
-  dcb9c094407e4aa3ad03c909d22a3e3b:
-    Name: "Hitobjects"
-    OsbLayer: Background
-    DiffSpecific: No
-    Visible: Yes
-  67d20e3ad2344fce85f187ee5040bdb3:
-    Name: "BeatScale"
+  e038d2a72dfd455ebf362aeaccedd430:
+    Name: ""
     OsbLayer: Background
     DiffSpecific: No
     Visible: Yes
