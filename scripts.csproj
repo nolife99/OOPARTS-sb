@@ -52,8 +52,11 @@
   </Target>
   -->
   <ItemGroup>
-    <Compile Include="BG.cs" />
+    <Compile Include="Background.cs" />
+    <Compile Include="BackgroundEffect.cs" />
     <Compile Include="Hitobject.cs" />
+    <Compile Include="Particles.cs" />
+    <Compile Include="SpectrumDots.cs" />
     <Compile Include="Transitions.cs" />
   </ItemGroup>
   <ItemGroup />
