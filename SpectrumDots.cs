@@ -19,7 +19,6 @@ namespace StorybrewScripts
 
                 Spectrum(92600, 119367, false);
                 Spectrum(125766, 150788, false);
-                Spectrum(125766, 150788, false);
                 Spectrum(181919, 222522, false);
                 Spectrum(269366, 306829, true);
             }
